@@ -3,7 +3,7 @@ import React from 'react';
 
 // images 
 import showIcon from '../../assets/images/Auth/Show.svg'
-const FormAuth = () => {
+const FormAuth = ({btnName}) => {
     return (
         <form className='min-w-96 mt-4'>
             <label htmlFor="login" className='flex flex-col'>
@@ -17,9 +17,8 @@ const FormAuth = () => {
                 <img className='absolute top-1/2 -right-7 -translate-y-1/2 ml-1.5 cursor-pointer' src={showIcon} />
             </div>
             </label>
-            <button type="submit" className='bg-blue-500 w-full mt-5 text-white font-bold py-3 cursor-pointer rounded-sm'>Login</button>
+            <button type="submit" className='bg-blue-500 w-full mt-5 text-white font-bold py-3 cursor-pointer rounded-sm'>{btnName}</button>
         </form>
-        
     );
 };
 
