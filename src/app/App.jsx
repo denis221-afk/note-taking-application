@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 
 function App() {
-    const isAuth = useSelector(state => state.auth.isAuth)
+    const isAuth = useSelector(state => state.auth.isAuth); 
 
   return(
     <>

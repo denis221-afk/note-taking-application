@@ -5,7 +5,7 @@ import React from 'react';
 import AuthPages from '../../pages/authPages/AuthPages';
 const RouterLogin = () => {
     return (
-        <div>
+        <div className='flex items-center justify-center w-full h-dvh'>
             <AuthPages />
         </div>
     );
