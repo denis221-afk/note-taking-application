@@ -23,7 +23,7 @@ const AuthPages = () => {
                 <h1 className='font-bold text-2xl tracking-[-0.03125em] leading-[1.2]'>Welcome to Note</h1>
                 <span className='text-gray-500 tracking-[-0.03125em] leading-[1.2]'>Please log in to continue</span>
             </div>
-            <FormAuth btnName='Login'/>
+            <FormAuth btnName='Login' type="Login"/>
             <div className='w-full h-px bg-gray-200 mt-6'></div>
             <span className='mt-4'>or login with Google</span>
             <LoginWithGoogle />

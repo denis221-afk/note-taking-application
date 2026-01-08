@@ -1,20 +1,57 @@
 import React from 'react';
 
 
+//hooks
+import { usePostAtuh } from '../../services/authServeces/postAuth';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+
 // images 
 import showIcon from '../../assets/images/Auth/Show.svg'
-const FormAuth = ({btnName}) => {
+
+const FormAuth = ({btnName, type}) => {
+    const {register, handleSubmit, formState: {errors}} = useForm({mode: 'onChange'});
+    const { registerAuth, loginAuth } = usePostAtuh();
+    const navigate = useNavigate();
+
+    async function onSubmit(data) {
+      if(type === 'Register') {
+       await registerAuth(data); 
+
+      } else if(type === 'Login') {
+        await loginAuth(data)
+      }
+       navigate("/", {replace: true})
+    }
+
+
     return (
-        <form className='min-w-96 mt-4'>
+        <form className='min-w-96 mt-4' onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="login" className='flex flex-col'>
                 <span>Email Adress</span>
-                <input type="text"  placeholder='email@exemple.com' className='py-3 px-4 border-gray-200 border-2 rounded-sm'/>
+                <input type="text"  placeholder='email@exemple.com' 
+                {...register('email', {
+                    required: 'Field cannot be empty', 
+                    maxLength: 254, 
+                    minLength: {
+                        value: 6, 
+                        massenge: 'Min Length 6'
+                    },
+                    pattern: {value: /^\S+@\S+\.\S+$/, message: 'email is not valide'}
+                    }
+                )
+                } className='py-3 px-4 border-gray-200 border-2 rounded-sm' />
+                {errors.email && <p className='text-red-600'>{errors.email.message}</p>}
             </label>
             <label htmlFor="login" className='flex flex-col mt-4'>
                 <span>Password</span>
             <div className='relative'>
-                <input type="password" className='py-3 px-4 border-gray-200 border-2 rounded-sm w-full'/>
+                <input type="password" 
+                {...register('password', {required: 'Field cannot be empty', minLength: 6, maxLength: 28})}  
+                className='py-3 px-4 border-gray-200 border-2 rounded-sm w-full' 
+            />
                 <img className='absolute top-1/2 -right-7 -translate-y-1/2 ml-1.5 cursor-pointer' src={showIcon} />
+                {errors.password && <p className='text-red-600'>{errors.password.message}</p>}
             </div>
             </label>
             <button type="submit" className='bg-blue-500 w-full mt-5 text-white font-bold py-3 cursor-pointer rounded-sm'>{btnName}</button>
