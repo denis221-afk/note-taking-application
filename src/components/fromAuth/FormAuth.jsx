@@ -1,38 +1,36 @@
 //hooks
-import { postAtuh } from '../../services/authServeces/postAuth';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-// images 
-import showIcon from '../../assets/images/Auth/Show.svg'
 import ErrorMasenge from '../errorMasenge/ErrorMasenge';
 import { useLoading } from '../../hooks/useContext';
 import Loading from '../loading/Loading';
+import { useSubmit } from '../../hooks/useSubmit';
+// images 
+import showIcon from '../../assets/images/Auth/Show.svg'
+
+
 
 const FormAuth = ({btnName, type}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({mode: 'onChange'});
-    const { registerAuth, loginAuth } = postAtuh();
     const navigate = useNavigate();
     const [viseblePassword, setVisible] = useState(false); 
-    const {isLoading, setLoading} = useLoading();
+    const {isLoading} = useLoading();
+    const {onSubmit} = useSubmit();
 
-    async function onSubmit(data) {
-      setLoading(true); 
-      if(type === 'Register') {
-       await registerAuth(data); 
 
-      } else if(type === 'Login') {
-        await loginAuth(data); 
-      }
-       navigate("/", {replace: true}); 
-       setLoading(false);
+    async function handSumit(data) {
+        const success = await onSubmit(data, type);
+        if(success) {
+            navigate("/", {replace: true}); 
+        }
     }
 
 
     return (
     <>
     {isLoading ? <Loading /> : null}
-        <form className='min-w-96 mt-4' onSubmit={handleSubmit(onSubmit)}>
+        <form className='min-w-96 mt-4' onSubmit={handleSubmit(handSumit)}>
             <label htmlFor="login" className='flex flex-col'>
                 <span>Email Adress</span>
                 <input type="text"  placeholder='email@exemple.com' 
