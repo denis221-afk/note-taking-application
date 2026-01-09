@@ -7,12 +7,15 @@ import App from './app/App'
 
 import { Provider } from "react-redux";
 import { store } from "./store";
+import {LoadingProvider}  from './hooks/useContext';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
       <Provider store={store}>
-        <App />
+        <LoadingProvider>
+            <App />
+        </LoadingProvider>
       </Provider>
   </StrictMode>,
 )

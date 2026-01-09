@@ -6,25 +6,32 @@ import { useState } from 'react';
 // images 
 import showIcon from '../../assets/images/Auth/Show.svg'
 import ErrorMasenge from '../errorMasenge/ErrorMasenge';
+import { useLoading } from '../../hooks/useContext';
+import Loading from '../loading/Loading';
 
 const FormAuth = ({btnName, type}) => {
     const {register, handleSubmit, formState: {errors}} = useForm({mode: 'onChange'});
     const { registerAuth, loginAuth } = postAtuh();
     const navigate = useNavigate();
-    const [viseblePassword, setVisible] = useState(false)
+    const [viseblePassword, setVisible] = useState(false); 
+    const {isLoading, setLoading} = useLoading();
 
     async function onSubmit(data) {
+      setLoading(true); 
       if(type === 'Register') {
        await registerAuth(data); 
 
       } else if(type === 'Login') {
         await loginAuth(data); 
       }
-       navigate("/", {replace: true})
+       navigate("/", {replace: true}); 
+       setLoading(false);
     }
 
 
     return (
+    <>
+    {isLoading ? <Loading /> : null}
         <form className='min-w-96 mt-4' onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="login" className='flex flex-col'>
                 <span>Email Adress</span>
@@ -57,6 +64,8 @@ const FormAuth = ({btnName, type}) => {
             </label>
             <button type="submit" className='bg-blue-500 w-full mt-5 text-white font-bold py-3 cursor-pointer rounded-sm'>{btnName}</button>
         </form>
+    </>
+
     );
 };
 
