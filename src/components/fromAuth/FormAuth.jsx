@@ -17,12 +17,15 @@ const FormAuth = ({btnName, type}) => {
     const [viseblePassword, setVisible] = useState(false); 
     const {isLoading} = useLoading();
     const {onSubmit} = useSubmit();
+    const [Error, setError] = useState('')
 
 
     async function handSumit(data) {
-        const success = await onSubmit(data, type);
-        if(success) {
+        const {status} = await onSubmit(data, type);
+        if(status.success) {
             navigate("/", {replace: true}); 
+        } else {
+           setError(status.masenge);
         }
     }
 
@@ -61,6 +64,7 @@ const FormAuth = ({btnName, type}) => {
             </div>
             </label>
             <button type="submit" className='bg-blue-500 w-full mt-5 text-white font-bold py-3 cursor-pointer rounded-sm'>{btnName}</button>
+            {Error ? <ErrorMasenge masenge={Error}/> : null}
         </form>
     </>
 

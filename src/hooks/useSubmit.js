@@ -1,21 +1,23 @@
 // hooks
-import { postAtuh } from '../services/authServeces/postAuth';
 import { useLoading } from '../hooks/useContext';
+import { useAuth } from './useAuth';
 
 export function useSubmit() {
-    const { registerAuth, loginAuth } = postAtuh();
+    const { registerAuth, loginAuth } = useAuth();
     const {setLoading} = useLoading();
 
     async function onSubmit(data ,type) {
     setLoading(true); 
+    let status
       if(type === 'Register') {
-       await registerAuth(data); 
+     status =  await registerAuth(data); 
 
       } else if(type === 'Login') {
-        await loginAuth(data); 
+      status = await loginAuth(data); 
       }
       setLoading(false);
-      return {success: true}
+    
+      return {status}
 
     }
 
