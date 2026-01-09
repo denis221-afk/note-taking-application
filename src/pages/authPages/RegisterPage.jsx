@@ -1,10 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 // Assets
 import logoImages from '../../assets/images/Auth/logo.webp';
-
-
 
 // style 
 import './authStyle.css';
