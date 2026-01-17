@@ -1,15 +1,14 @@
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-export const createNote = async (userId, note) => {
-  const notesRef = collection(db, "users", userId, "notes");
+export const createNote = async (userId, data) => {
+  const note = {
+    ...data,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
 
-  await addDoc(notesRef, {
-    title: note.title,
-    content: note.content,
-    tags: note.tags || [],
-    archived: false,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  const docRef = await addDoc(collection(db, "users", userId, "notes"), note);
+
+  return { id: docRef.id, ...note }; // важливо для optimistic update
 };

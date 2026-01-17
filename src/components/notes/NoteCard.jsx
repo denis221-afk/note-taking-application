@@ -1,8 +1,6 @@
 import Tag from "../ui/Tag";
 
 export default function NoteCard({ active, title, tags }) {
-  console.log(tags);
-
   const elem = tags.map((tag) => {
     return <Tag label={tag} />;
   });

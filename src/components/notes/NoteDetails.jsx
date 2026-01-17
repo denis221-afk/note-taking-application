@@ -2,10 +2,10 @@ import NoteActions from "../notes/NoteAction";
 import Tag from "../ui/Tag";
 import Button from "../ui/Button";
 import { useState } from "react";
-import { createNote } from "../../services/notesServices/createNote";
 import { useSelector } from "react-redux";
+import { useNotes } from "../../hooks/useNote";
 
-export default function NoteDetails({ isEdit, saveNotes }) {
+export default function NoteDetails({ isEdit }) {
   const [noteDate, setData] = useState({
     title: "",
     content: "",
@@ -13,10 +13,9 @@ export default function NoteDetails({ isEdit, saveNotes }) {
   });
 
   const userId = useSelector((state) => state.auth.user.uid);
-
+  const { notes, createNote } = useNotes(userId);
   async function saveNote() {
-    await createNote(userId, noteDate);
-    saveNotes();
+    createNote.mutate(noteDate);
     setData({
       title: "",
       content: "",

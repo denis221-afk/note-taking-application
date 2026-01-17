@@ -1,23 +1,18 @@
 import NoteCard from "./NoteCard";
 
 import { useSelector } from "react-redux";
-import { getUserNotes } from "../../services/notesServices/getNotes";
+import { useNotes } from "../../hooks/useNote";
 
-import { useEffect, useState } from "react";
-
-export default function NotesList({ version, createNote }) {
+export default function NotesList({ createNote }) {
   const userId = useSelector((state) => state.auth.user.uid);
-  const [notes, setNotes] = useState([]);
-  useEffect(() => {
-    if (!userId) return;
+  const { notes } = useNotes(userId);
 
-    getUserNotes(userId).then((note) => setNotes(note));
-  }, [version]);
-
-  const notesArr = notes.map((note, id) => {
-    const { title, tags } = note;
-    return <NoteCard key={id} title={title} tags={tags} />;
-  });
+  const notesArr = notes
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .map((note, id) => {
+      const { title, tags } = note;
+      return <NoteCard key={id} title={title} tags={tags} />;
+    });
 
   return (
     <section className="w-[360px] border-r bg-white p-4 flex flex-col gap-4 overflow-y-auto">
