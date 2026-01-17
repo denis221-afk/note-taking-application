@@ -1,28 +1,28 @@
-// Routing
-import RouterLogin from "../router/routerLogin/routerLogin";
-import RouterMain from "../router/routerMain/RouterMain";
+import AppLayout from "../components/layout/AppLayout";
+import LayoutLogin from "../components/layout/LayoutLogin";
+import MainPages from "../pages/mainPages/MainPages";
 
-// store
 import { useSelector } from "react-redux";
-
-// modules 
-import { BrowserRouter } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-    const isAuth = useSelector(state => state.auth.isAuth); 
+  const isAuth = useSelector((state) => state.auth.isAuth);
 
-  return(
+  return (
     <>
       <BrowserRouter>
-          {(isAuth) ? <RouterMain /> : <RouterLogin />}
+        {isAuth ? (
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<MainPages />} />
+            </Routes>
+          </AppLayout>
+        ) : (
+          <LayoutLogin />
+        )}
       </BrowserRouter>
     </>
-  )
+  );
 }
-
-
-
-
 
 export default App;

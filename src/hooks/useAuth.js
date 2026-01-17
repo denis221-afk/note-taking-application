@@ -8,7 +8,7 @@ export function useAuth() {
   const registerAuth = async (data) => {
     try {
       const user = await postAtuh.register(data.email, data.password);
-      const { uid, email } = user;
+      const { uid, email } = user.user;
       dispatch(setUser({ uid, email }));
       dispatch(setLogin());
 
@@ -26,7 +26,7 @@ export function useAuth() {
   const loginAuth = async (data) => {
     try {
       const user = await postAtuh.login(data.email, data.password);
-      const { uid, email } = user;
+      const { uid, email } = user.user;
       dispatch(setUser({ uid, email }));
       dispatch(setLogin());
 
@@ -45,7 +45,8 @@ export function useAuth() {
     try {
       const user = await postAtuh.authWithGoogle();
 
-      const { uid, email } = user;
+      const { uid, email } = user.user;
+
       dispatch(setUser({ uid, email }));
       dispatch(setLogin());
 
