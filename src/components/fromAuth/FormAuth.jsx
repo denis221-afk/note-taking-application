@@ -32,8 +32,11 @@ const FormAuth = ({ btnName, type }) => {
 
   return (
     <>
-      {isLoading ? <Loading /> : null}
-      <form className="min-w-96 mt-4" onSubmit={handleSubmit(handSumit)}>
+      <form
+        className="min-w-96 relative mt-4"
+        onSubmit={handleSubmit(handSumit)}
+      >
+        {isLoading ? <Loading /> : null}
         <label htmlFor="login" className="flex flex-col">
           <span>Email Adress</span>
           <input

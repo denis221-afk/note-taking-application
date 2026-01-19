@@ -5,15 +5,16 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNotes } from "../../hooks/useNote";
 
-export default function NoteDetails({ isEdit }) {
+export default function NoteDetails({ isEdit, note, createNoteStatus }) {
+  const userId = useSelector((state) => state.auth.user.uid);
+  const { createNote } = useNotes(userId);
+
   const [noteDate, setData] = useState({
     title: "",
     content: "",
     tags: [],
   });
 
-  const userId = useSelector((state) => state.auth.user.uid);
-  const { notes, createNote } = useNotes(userId);
   async function saveNote() {
     createNote.mutate(noteDate);
     setData({
@@ -21,54 +22,71 @@ export default function NoteDetails({ isEdit }) {
       content: "",
       tags: [],
     });
+    createNoteStatus(false);
   }
   return (
     <>
       {isEdit ? (
         <Edit noteDate={noteDate} setData={setData} saveNote={saveNote} />
       ) : (
-        <View />
+        <View note={note} />
       )}
     </>
   );
 }
 
-const View = () => {
+const View = ({ note }) => {
+  if (!note) {
+    return (
+      <section className="flex-1 p-8 text-gray-400">Оберіть нотатку</section>
+    );
+  }
+
+  const { title, content, tags, updatedAt } = note;
   return (
     <section className="flex-1 p-8 overflow-y-auto">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h2 className="text-2xl font-semibold mb-2">
-            React Performance Optimization
-          </h2>
+          <input value={title} className="text-2xl font-semibold mb-2" />
 
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-            <span>🏷️ Dev, React</span>
-            <span>🕒 29 Oct 2024</span>
+            <span>🕒 {updatedAt}</span>
           </div>
 
-          <div className="flex gap-2">
-            <Tag label="Dev" />
-            <Tag label="React" />
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2">
+            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
+              Dev
+            </span>
+            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
+              React
+            </span>
+            <input
+              type="text"
+              placeholder="+ Add tag"
+              className="text-xs px-2 py-1 outline-none bg-transparent placeholder-gray-400"
+              value={tags || ""}
+              onChange={(e) => {
+                props.setData((prev) => ({
+                  ...prev,
+                  tags: e.target.value.split(",").map((tag) => tag.trim()),
+                }));
+              }}
+            />
           </div>
         </div>
 
         <NoteActions />
       </div>
 
-      <article className="prose max-w-none text-gray-700">
-        <p>
-          <strong>Key performance optimization techniques:</strong>
-        </p>
-        <ol>
-          <li>Code Splitting</li>
-          <li>Memoization</li>
-          <li>Virtual Lists</li>
-        </ol>
-        <p>
-          <strong>TODO:</strong> Benchmark app
-        </p>
-      </article>
+      <textarea
+        placeholder="Почніть писати нотатку..."
+        className="h-full w-full resize-none text-sm outline-none placeholder-gray-400"
+        value={content || ""}
+        onChange={(e) => {
+          props.setData((prev) => ({ ...prev, content: e.target.value }));
+        }}
+      />
 
       <div className="flex gap-3 mt-10">
         <Button variant="primary">Save Note</Button>

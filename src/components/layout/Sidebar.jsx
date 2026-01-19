@@ -2,7 +2,7 @@ import { useNotes } from "../../hooks/useNote";
 import { useSelector } from "react-redux";
 export default function Sidebar() {
   const userId = useSelector((state) => state.auth.user.uid);
-  const { notes } = useNotes(userId);
+  const { notes, isLoading, isFetching } = useNotes(userId);
 
   const tags = [...new Set(notes.flatMap((note) => note.tags))];
   console.log(tags);
@@ -25,14 +25,18 @@ export default function Sidebar() {
       <div>
         <p className="text-sm font-semibold text-gray-500 mb-3">Tags</p>
         <ul className="flex flex-col gap-2">
-          {tags.map((tag, i) => (
-            <li
-              key={i}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-sm"
-            >
-              #{tag}
-            </li>
-          ))}
+          {isLoading || isFetching ? (
+            <li>Loading tags...</li>
+          ) : (
+            tags.map((tag, i) => (
+              <li
+                key={i}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-sm"
+              >
+                #{tag}
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </aside>

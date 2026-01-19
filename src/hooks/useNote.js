@@ -2,11 +2,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserNotes } from "../services/notesServices/getNotes";
 import { createNote } from "../services/notesServices/createNote";
 
+
 export const useNotes = (userId) => {
+
+
   const queryClient = useQueryClient();
 
   // 1️⃣ отримання нотаток
-  const { data: notes = [] } = useQuery({
+  const {
+    data: notes = [],
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["notes", userId],
     queryFn: () => getUserNotes(userId),
     enabled: !!userId,
@@ -18,5 +25,5 @@ export const useNotes = (userId) => {
     onSuccess: () => queryClient.invalidateQueries(["notes", userId]),
   });
 
-  return { notes, createNote: createNoteMutation };
+  return { notes, isLoading, isFetching, createNote: createNoteMutation };
 };
