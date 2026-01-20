@@ -6,13 +6,17 @@ export default function NoteCard({
   tags,
   setActiveNote,
   index,
+  setMode,
 }) {
   const elem = tags.map((tag) => {
     return <Tag label={tag} />;
   });
   return (
     <div
-      onClick={() => setActiveNote(index)}
+      onClick={() => {
+        setActiveNote(index);
+        setMode("view");
+      }}
       className={`p-4 rounded-xl border cursor-pointer transition
       ${active ? "border-blue-500 bg-blue-50" : "hover:bg-gray-50"}`}
     >

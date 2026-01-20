@@ -7,24 +7,22 @@ import NotesErrorBoundary from "../../components/errorBoundary/ErrorBoundary";
 export default function NotesPage() {
   const userId = useSelector((state) => state.auth.user.uid);
   const { notes, isLoading, isFetching } = useNotes(userId);
-  const [isEdit, setEdit] = useState(false);
   const [activeNoteId, setActiveNoteId] = useState(null);
 
+  const [mode, setMode] = useState("view"); // "view" або "edit" "create"
+
   useEffect(() => {
-    if (!activeNoteId && notes?.length > 0) {
+    if (notes?.length > 0) {
       setActiveNoteId(notes[0].id);
     }
-  }, [notes, activeNoteId]);
-  function createNoteStatus(isStatus = true) {
-    setEdit(isStatus);
-  }
+  }, [notes]);
 
   const activeNote = notes?.find((n) => n.id === activeNoteId);
   return (
     <div className="flex h-full">
       <NotesErrorBoundary>
         <NotesList
-          createNoteStatus={createNoteStatus}
+          setMode={setMode}
           activeNoteId={activeNoteId}
           setActiveNote={setActiveNoteId}
           notes={notes}
@@ -33,11 +31,7 @@ export default function NotesPage() {
         />
       </NotesErrorBoundary>
       <NotesErrorBoundary>
-        <NoteDetails
-          isEdit={isEdit}
-          note={activeNote}
-          createNoteStatus={createNoteStatus}
-        />
+        <NoteDetails note={activeNote} mode={mode} setMode={setMode} />
       </NotesErrorBoundary>
     </div>
   );

@@ -1,166 +1,72 @@
-import NoteActions from "../notes/NoteAction";
-import Tag from "../ui/Tag";
-import Button from "../ui/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNotes } from "../../hooks/useNote";
+import ViewNote from "./ViewNote";
+import { EditNote } from "./EditNote";
 
-export default function NoteDetails({ isEdit, note, createNoteStatus }) {
+export default function NoteDetails({ note, mode, setMode }) {
   const userId = useSelector((state) => state.auth.user.uid);
-  const { createNote } = useNotes(userId);
+  const { createNote, updateNote } = useNotes(userId);
+  const [noteDate, setData] = useState(null);
 
-  const [noteDate, setData] = useState({
-    title: "",
-    content: "",
-    tags: [],
-  });
+  useEffect(() => {
+    if (mode === "create") {
+      // CREATE MODE
+      setData({
+        title: "",
+        content: "",
+        tags: [],
+      });
+      return;
+    }
+
+    if (note && mode === "view" && mode !== "edit") {
+      // EDIT MODE
+      setData({
+        title: note.title || "",
+        content: note.content || "",
+        tags: note.tags || [],
+      });
+    }
+  }, [note, mode]);
 
   async function saveNote() {
-    createNote.mutate(noteDate);
-    setData({
-      title: "",
-      content: "",
-      tags: [],
-    });
-    createNoteStatus(false);
+    if (mode === "create") {
+      createNote.mutate(noteDate, {
+        onError: (error) => {
+          console.error("Error creating note:", error);
+        },
+        onSuccess: () => {
+          setData({
+            title: "",
+            content: "",
+            tags: [],
+          });
+          setMode("view");
+        },
+      });
+    }
+    if (mode === "edit") {
+      updateNote.mutate(
+        { id: note.id, ...noteDate },
+        {
+          onError: (error) => {
+            console.error("Error updating note:", error);
+          },
+          onSuccess: () => {
+            setMode("view");
+          },
+        },
+      );
+    }
   }
   return (
     <>
-      {isEdit ? (
-        <Edit noteDate={noteDate} setData={setData} saveNote={saveNote} />
+      {mode === "create" || mode === "edit" ? (
+        <EditNote noteDate={noteDate} setData={setData} saveNote={saveNote} />
       ) : (
-        <View note={note} />
+        <ViewNote note={note} setMode={setMode} />
       )}
     </>
   );
 }
-
-const View = ({ note }) => {
-  if (!note) {
-    return (
-      <section className="flex-1 p-8 text-gray-400">Оберіть нотатку</section>
-    );
-  }
-
-  const { title, content, tags, updatedAt } = note;
-  return (
-    <section className="flex-1 p-8 overflow-y-auto">
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <input value={title} className="text-2xl font-semibold mb-2" />
-
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-            <span>🕒 {updatedAt}</span>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
-              Dev
-            </span>
-            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
-              React
-            </span>
-            <input
-              type="text"
-              placeholder="+ Add tag"
-              className="text-xs px-2 py-1 outline-none bg-transparent placeholder-gray-400"
-              value={tags || ""}
-              onChange={(e) => {
-                props.setData((prev) => ({
-                  ...prev,
-                  tags: e.target.value.split(",").map((tag) => tag.trim()),
-                }));
-              }}
-            />
-          </div>
-        </div>
-
-        <NoteActions />
-      </div>
-
-      <textarea
-        placeholder="Почніть писати нотатку..."
-        className="h-full w-full resize-none text-sm outline-none placeholder-gray-400"
-        value={content || ""}
-        onChange={(e) => {
-          props.setData((prev) => ({ ...prev, content: e.target.value }));
-        }}
-      />
-
-      <div className="flex gap-3 mt-10">
-        <Button variant="primary">Save Note</Button>
-        <Button variant="secondary">Cancel</Button>
-      </div>
-    </section>
-  );
-};
-
-const Edit = (props) => {
-  const { title, content, tags } = props.noteDate;
-  return (
-    <div className="flex-1 h-full flex-col bg-white">
-      {/* Header */}
-      <div className="flex items-start justify-between  px-4 py-3">
-        <div className="flex-1">
-          {/* Title */}
-          <input
-            type="text"
-            placeholder="Назва нотатки"
-            className="w-full text-lg font-semibold outline-none placeholder-gray-400 mb-2"
-            value={title || ""}
-            onChange={(e) => {
-              props.setData((prev) => ({ ...prev, title: e.target.value }));
-            }}
-          />
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
-              Dev
-            </span>
-            <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">
-              React
-            </span>
-            <input
-              type="text"
-              placeholder="+ Add tag"
-              className="text-xs px-2 py-1 outline-none bg-transparent placeholder-gray-400"
-              value={tags || ""}
-              onChange={(e) => {
-                props.setData((prev) => ({
-                  ...prev,
-                  tags: e.target.value.split(",").map((tag) => tag.trim()),
-                }));
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 p-4">
-        <textarea
-          placeholder="Почніть писати нотатку..."
-          className="h-full w-full resize-none text-sm outline-none placeholder-gray-400"
-          value={content || ""}
-          onChange={(e) => {
-            props.setData((prev) => ({ ...prev, content: e.target.value }));
-          }}
-        />
-      </div>
-      <div className="flex gap-3 mt-10">
-        <Button variant="primary" saveNote={props.saveNote}>
-          Save Note
-        </Button>
-        <Button variant="secondary">Cancel</Button>
-      </div>
-
-      {/* Footer */}
-      <div className="flex mt-6 items-center justify-between border-t px-4 py-2 text-xs text-gray-400">
-        <span>Оновлено: 12.01.2026</span>
-        <span>Редагування</span>
-      </div>
-    </div>
-  );
-};

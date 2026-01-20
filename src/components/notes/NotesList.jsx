@@ -3,12 +3,12 @@ import Loading from "../loading/Loading";
 import NoteCard from "./NoteCard";
 
 export default function NotesList({
-  createNoteStatus,
   activeNoteId,
   notes,
   setActiveNote,
   isLoading,
   isFetching,
+  setMode,
 }) {
   if (!notes) {
     // Штучна помилка для тесту Error Boundary
@@ -27,6 +27,7 @@ export default function NotesList({
           active={id === activeNoteId}
           index={id}
           setActiveNote={setActiveNote}
+          setMode={setMode}
         />
       );
     });
@@ -36,7 +37,7 @@ export default function NotesList({
       {isLoading || isFetching ? <Loading /> : null}
       <button
         className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700"
-        onClick={() => createNoteStatus()}
+        onClick={() => setMode("create")}
       >
         + Create New Note
       </button>
