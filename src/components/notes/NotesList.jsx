@@ -14,6 +14,7 @@ export default function NotesList({
     // Штучна помилка для тесту Error Boundary
     throw new Error("Notes not found!");
   }
+
   const notesArr = notes
     .sort((a, b) => b.updatedAt - a.updatedAt)
     .map((note, index) => {

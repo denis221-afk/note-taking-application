@@ -3,9 +3,7 @@ import NoteActions from "../notes/NoteAction";
 import Button from "../ui/Button";
 const ViewNote = ({ note, setMode }) => {
   if (!note) {
-    return (
-      <section className="flex-1 p-8 text-gray-400">Оберіть нотатку</section>
-    );
+    return <section className="flex-1 p-8 text-gray-400">Chose Note</section>;
   }
 
   const { title, content, tags, updatedAt } = note;
@@ -16,7 +14,9 @@ const ViewNote = ({ note, setMode }) => {
           <div>
             <h1 className="text-2xl font-semibold mb-2">{title}</h1>
 
-            <div className="text-sm text-gray-500 mb-3">🕒</div>
+            <div className="text-sm text-gray-500 mb-3">
+              🕒{new Date(updatedAt).toLocaleString()}
+            </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
               {tags?.map((tag) => (

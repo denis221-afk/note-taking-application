@@ -1,6 +1,7 @@
 import Button from "../ui/Button";
 export const EditNote = (props) => {
-  const { title, content, tags } = props.noteDate;
+  if (!props?.noteData) return null;
+  const { title, content, tags } = props?.noteData || {};
   return (
     <div className="flex-1  h-full flex-col bg-white">
       {/* Header */}

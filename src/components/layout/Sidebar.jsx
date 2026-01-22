@@ -1,11 +1,10 @@
 import { useNotes } from "../../hooks/useNote";
 import { useSelector } from "react-redux";
-export default function Sidebar() {
+export default function Sidebar({ setIsCurrentTeg }) {
   const userId = useSelector((state) => state.auth.user.uid);
   const { notes, isLoading, isFetching } = useNotes(userId);
 
   const tags = [...new Set(notes.flatMap((note) => note.tags))];
-  console.log(tags);
 
   return (
     <aside className="w-64 bg-white border-r px-4 py-6 flex flex-col gap-6">
@@ -14,11 +13,11 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-2">
-        <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 text-blue-600">
+        <button
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 text-blue-600"
+          onClick={() => setIsCurrentTeg(null)}
+        >
           All Notes
-        </button>
-        <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
-          Archived Notes
         </button>
       </nav>
 
@@ -32,6 +31,7 @@ export default function Sidebar() {
               <li
                 key={i}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-sm"
+                onClick={() => setIsCurrentTeg(tag)}
               >
                 #{tag}
               </li>

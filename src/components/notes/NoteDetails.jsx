@@ -4,7 +4,7 @@ import { useNotes } from "../../hooks/useNote";
 import ViewNote from "./ViewNote";
 import { EditNote } from "./EditNote";
 
-export default function NoteDetails({ note, mode, setMode }) {
+export default function NoteDetails({ note, mode, setMode, setIsCurrentTeg }) {
   const userId = useSelector((state) => state.auth.user.uid);
   const { createNote, updateNote } = useNotes(userId);
   const [noteDate, setData] = useState(null);
@@ -27,6 +27,7 @@ export default function NoteDetails({ note, mode, setMode }) {
         content: note.content || "",
         tags: note.tags || [],
       });
+      setIsCurrentTeg(null);
     }
   }, [note, mode]);
 
@@ -63,7 +64,7 @@ export default function NoteDetails({ note, mode, setMode }) {
   return (
     <>
       {mode === "create" || mode === "edit" ? (
-        <EditNote noteDate={noteDate} setData={setData} saveNote={saveNote} />
+        <EditNote noteData={noteDate} setData={setData} saveNote={saveNote} />
       ) : (
         <ViewNote note={note} setMode={setMode} />
       )}

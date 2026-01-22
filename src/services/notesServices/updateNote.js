@@ -1,5 +1,5 @@
 // services/notesServices/updateNote.js
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../database/firebase"; // твій експорт Firestore
 
 /**
@@ -19,7 +19,7 @@ export const updateNote = async (userId, noteData) => {
 
   await updateDoc(noteRef, {
     ...data,
-    updatedAt: new Date(), // оновлюємо дату
+    updatedAt: serverTimestamp(), // оновлюємо дату
   });
 
   return { id, ...data }; // можна повернути для optimistic update
